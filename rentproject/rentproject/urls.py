@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from rentapp.views import SignUp
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('singup/', SignUp.as_view(), name='singup')
 ]
