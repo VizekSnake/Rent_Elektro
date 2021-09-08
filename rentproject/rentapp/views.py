@@ -67,6 +67,8 @@ class SignupView(View):
             })
             user.email_user(subject, message)
             return redirect('activation_sent')
+        else:
+            messages.error(request, 'Username already exists')
 
 
 class LoginPage(View):
