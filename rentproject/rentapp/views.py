@@ -1,4 +1,4 @@
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_text
@@ -12,6 +12,7 @@ from django.template.loader import render_to_string
 from .forms import SignUpForm
 from .tokens import account_activation_token
 from django.views import View
+from django.contrib import messages
 
 
 def home_view(request):
@@ -66,3 +67,30 @@ class SignupView(View):
             })
             user.email_user(subject, message)
             return redirect('activation_sent')
+
+
+class LoginPage(View):
+
+    def get(self, request):
+        # if request.user.is_authenticated:
+        #     return redirect('home')
+        return render(request, 'login.html')
+
+    def post(self, request):
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.info(request, 'Username OR password is incorrect')
+
+
+def logoutUser(request):
+    logout(request)
+    return redirect('login')
+
+

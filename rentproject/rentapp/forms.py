@@ -4,9 +4,14 @@ from django.contrib.auth.models import User
 
 
 class SignUpForm(UserCreationForm):
-    first_name = forms.CharField(max_length=100, help_text='Last Name')
+    first_name = forms.CharField(max_length=100, help_text='First Name')
     last_name = forms.CharField(max_length=100, help_text='Last Name')
     email = forms.EmailField(max_length=150, help_text='Email')
+    # try:
+    #     User._default_manager.get(username=username)
+    #     raise forms.ValidationError("Username already present.Please change username ")
+    #
+    # except User.DoesNotExist:
 
     class Meta:
         model = User
