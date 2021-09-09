@@ -37,7 +37,8 @@ def activate(request, uidb64, token):
         user.profile.signup_confirmation = True
         user.save()
         login(request, user)
-        return redirect('home')
+        message = 'Thanks for confirming your email address!'
+        return redirect('login', context={'message': message})
     else:
         return render(request, 'activation_invalid.html')
 
@@ -69,30 +70,3 @@ class SignupView(View):
             return redirect('activation_sent')
         else:
             messages.error(request, 'Username already exists')
-
-
-class LoginPage(View):
-
-    def get(self, request):
-        # if request.user.is_authenticated:
-        #     return redirect('home')
-        return render(request, 'login.html')
-
-    def post(self, request):
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        user = authenticate(request, username=username, password=password)
-
-        if user is not None:
-            login(request, user)
-            return redirect('home')
-        else:
-            messages.info(request, 'Username OR password is incorrect')
-
-
-def logoutUser(request):
-    logout(request)
-    return redirect('login')
-
-

@@ -1,13 +1,17 @@
 from django.contrib import admin
-from rentapp.views import home_view, SignupView, activation_sent_view, activate, LoginPage
+from rentapp.views import home_view, SignupView, activation_sent_view, activate
 from django.contrib.auth import views as auth_views
-from django.urls import path
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('allauth.urls')),
     path('', home_view, name="home"),
     path('signup/', SignupView.as_view(), name="signup"),
-    path('login/', LoginPage.as_view(), name="login"),
+    path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(template_name='logout.html'), name='logout'),
     path('sent/', activation_sent_view, name="activation_sent"),
     path('activate/<slug:uidb64>/<slug:token>/', activate, name='activate'),
     path('reset_password/',
@@ -29,3 +33,6 @@ urlpatterns = [
          auth_views.PasswordChangeView.as_view(template_name='change_password.html', success_url='/'),
          name='change_password'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
