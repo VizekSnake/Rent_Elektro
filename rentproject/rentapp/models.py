@@ -89,7 +89,7 @@ class PowerTool(models.Model):
         (IDEALSHAPE, 'Ideal shape'),
         (GOOD, 'Good condition'),
         (USED, 'Used'),
-        (HEAVILYUSED, 'heavily used')
+        (HEAVILYUSED, 'Heavily used')
     ]
     brand = models.ForeignKey(Brand, to_field='name', on_delete=models.CASCADE)
     description = models.CharField(max_length=300, blank=True)
@@ -100,6 +100,9 @@ class PowerTool(models.Model):
                                  choices=CONDITION, )
     price = models.SmallIntegerField(null=False)
     deposit = models.SmallIntegerField(null=False)
+    owner = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    tool_img = models.ImageField(default='default.jpg', upload_to='tool_pic')
 
     def __str__(self):
         return f'{self.brand} {self.type} with power of {self.power} W'
+
