@@ -15,7 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from rentapp.views import home_view, SignupView, profile, ProfileUpdateView, ToolUserAddView
+from rentapp.views import home_view, SignupView, profile, ProfileUpdateView, ToolUserAddView, Inbox, \
+    Directs, NewConversation, SendDirect, UserSearch
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
@@ -47,7 +48,12 @@ urlpatterns = [
     path('profile/', profile, name='profile'),
     path('profile/settings', ProfileUpdateView.as_view(),
          name='profile_update'),
-    path('profile/add_tool', ToolUserAddView.as_view(), name='add_user_tool')
+    path('profile/add_tool', ToolUserAddView.as_view(), name='add_user_tool'),
+    path('inbox/', Inbox, name='inbox'),
+    path('directs/<username>', Directs, name='directs'),
+    path('new/', UserSearch, name='usersearch'),
+    path('new/<username>', NewConversation, name='newconversation'),
+    path('send/', SendDirect, name='send_direct'),
 ]
 
 if settings.DEBUG:

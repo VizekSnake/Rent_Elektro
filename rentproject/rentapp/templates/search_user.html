@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+ <div class="content-section">
+<fieldset class="form-group">
+<form>
+    <input class="input" name="q" type="text" placeholder="Search user..." value="{{ request.GET.q }}">
+  	<button type="submit" class="btn btn-outline-info">Search</button>
+  </form>
+</fieldset>
+</div>
+
+<div class="content-section">
+
+{% for user in users %}
+<div class="content-section">
+    <div class="float-left ml-1">
+          {% if user.profile.picture %}
+            <img src="{{ user.profile.picture.url }}" alt="Placeholder image">
+          {% endif %}
+    </div>
+        <p>
+          <strong>{{ user.profile.first_name }} {{ user.profile.last_name }}</strong><small>@{{ user.username }}</small>
+        <a href="{% url 'newconversation' user.username %}" ><button class="btn btn-outline-info ml-1 float-right">Send a message!</button></a></p>
+</div>
+{% endfor %}
+	
+
+</div>
+
+{% endblock %}
