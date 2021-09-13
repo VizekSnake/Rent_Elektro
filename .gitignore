@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+.idea/
+/rentproject/.idea/
+/rentproject/rentapp/migrations
+/rentproject/media
