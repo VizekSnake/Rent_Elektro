@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    {% for tool in tools %}
+        <div class="content-section">
+            <div class="media">
+                <img class="tool-img" src="{{ tool.tool_img }}">
+                <div class="media-body">
+                    <h5 class="text-secondary">Tool: {{ tool.get_type_display}}</h5>
+                    <p class="text-secondary">Power: {{ tool.power }}</p>
+                    <p class="text-secondary">Price: {{ tool.price }}/day</p>
+                    <p class="text-secondary">Owner: {{ tool.owner }}
+                    <button class="btn btn-outline-info ml-1 float-right" type="submit">Details</button>
+                    <button class="btn btn-outline-info ml-1 float-right" type="submit">RentElectro</button></p>
+
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
