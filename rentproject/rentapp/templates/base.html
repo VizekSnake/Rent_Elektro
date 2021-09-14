@@ -34,6 +34,10 @@
                         <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
 {#                        <a class="nav-item nav-link" href="{% url 'inbox' %}">Inbox</a>#}
                         <a class="nav-item nav-link" href="{% url 'profile_update' %}">Settings</a>
+                        <a class="nav-item nav-link" href="{% url 'inbox' %}">Inbox</a>
+                    <a class="nav-item nav-link"href = '/profile/add_tool'>Add Your PowerTools</a>
+                    <a class="nav-item nav-link"href = '/profile/my_tools'>My PowerTools</a>
+                        <a class="nav-item nav-link"href = '/profile/rental_calendar'>Rental Calendar</a>
                         <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
                     {% else %}
                         <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
@@ -45,8 +49,8 @@
     </nav>
 </header>
 <main role="main" class="container">
-    <div class="row">
-        <div class="col-md-8">
+{#    <div class="row">#}
+        <div class="col">
             {% if messages %}
                 {% for message in messages %}
                     <div class="alert alert-{{ message.tags }}">
@@ -56,20 +60,10 @@
             {% endif %}
             {% block content %}{% endblock %}
         </div>
-        {% if user.is_authenticated %}
-                <ul class="list-group">
-                    <li class="list-group-item list-group-item-light"><a href = '/profile/add_tool'><button class="btn btn-outline-primary" type="submit">Add Your PowerTools</button></a></li>
-                    <li class="list-group-item list-group-item-light"><a href = '/profile/my_tools'><button class="btn btn-outline-primary" type="submit">My PowerTools</button></a></li>
-                    <li class="list-group-item list-group-item-light"><a href = '/profile/rental_calendar'><button class="btn btn-outline-primary" type="submit">Rental Calendar</button></a></li></li>
-                    <li class="list-group-item list-group-item-light"><a href = '/inbox'><button class="btn btn-outline-primary" type="submit">Messages</button></a></li>
-                </ul>
-                </p>
-            </div>
-            </div>
-        {% endif %}
     {% block pagination %}
       {% endblock %}
-    </div>
+
+{#</div>#}
 </main>
 
 <!-- Optional JavaScript -->

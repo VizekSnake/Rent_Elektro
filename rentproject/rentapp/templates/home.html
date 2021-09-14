@@ -1,7 +1,39 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+    {% load static %}
+<div class="content-section">
+<div class="col">
+            <p><a href="{% url 'home' %}"><img src="{% static "favicon/Rentelektrologo.svg" %}" width="50%" height="auto" class="col"/></a></div>
+            </p>
+        </div>
+        </div>
+    <div class="card-group">
+  <div class="card text-center">
+    <img class="card-img-top" src="{% static "hometoolmenu/power-saw.svg" %}" width="5%" height="auto" alt="Card image cap">
+    <div class="card-body">
+      <h5 class="card-title">Power Saw</h5>
+      <a href="#" class="btn btn-primary">Go somewhere</a>
+    </div>
+  </div>
+  <div class="card text-center">
+    <img class="card-img-top center" src="{% static "hometoolmenu/chainsaw.svg" %}" alt="Card image cap">
+    <div class="card-body">
+      <h5 class="card-title">Chainsaw</h5>
+      <a href="#" class="btn btn-primary">Go somewhere</a>
+    </div>
+  </div>
+  <div class="card text-center">
+    <img class="card-img-top" src="{% static "hometoolmenu/drill.svg" %}" alt="Card image cap">
+    <div class="card-body">
+      <h5 class="card-title">Drills</h5>
+      <a href="#" class="btn btn-primary">Go somewhere</a>
+    </div>
+  </div>
+</div>
+    <hr>
     {% for tool in tools %}
+
         <div class="content-section">
             <div class="media">
                 <img class="tool-img" src="{{ tool.tool_img }}">

@@ -3,10 +3,6 @@
 {% load static %}
 
 {% block content %}
-    <main role="main" class="container">
-        <h1 class="title is-2">
-            Messages
-        </h1>
         <div class="card">
             <div class="card-header" id="headingOne">
                 <h5 class="mb-0">
@@ -16,11 +12,8 @@
                     </button>
                 </h5>
             </div>
-
             <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
                 <div class="card-body">
-                    <div class="row">
-                        <ul class="list-group">
                             {% for message in messages %}
                                 <div class="card-body">
                                     <a class="{% if active_direct == message.user.username %}is-active{% endif %}"
@@ -35,51 +28,60 @@
                                             {% endif %} </div>
                                     </a></div>
                             {% endfor %}
-
-                        </ul>
                     </div>
                 </div>
             </div>
             <br>
-        </div>
-    </main>
+
     {#<a href="{% url 'usersearch' %}" class="button is-success">New message</a>#}
 
-<spacer>
-    <div class="column">
-
-        {% for direct in directs %}
-            <div class="box">
-                <div class="media-left">
+    <spacer>
+        <div class="column">
+            <div class="card">
+                <div class="card-header" id="headingOne">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseTwo"
+                                aria-expanded="true" aria-controls="collapseTwo">
+                            Chat
+                        </button>
+                    </h5>
                 </div>
-                <div class="content-section">
-                    <p>
 
-                        <strong>{{ direct.sender.profile.first_name }} {{ direct.sender.profile.last_name }}</strong>
-                        <small>@{{ direct.sender.username }}</small> on:
-                        <strong><small>{{ direct.date|date:'N d G:i' }}</small></strong>
-                    </p>
-                    {{ direct.body }}
+                <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo">
+                    <div class="card-body">
+                        {% for direct in directs %}
+                            <div class="box">
+                                <div class="media-left">
+                                </div>
+                                <div class="content-section">
+                                    <p>
+
+                                        <strong>{{ direct.sender.profile.first_name }} {{ direct.sender.profile.last_name }}</strong>
+                                        <small>@{{ direct.sender.username }}</small> on:
+                                        <strong><small>{{ direct.date|date:'N d G:i' }}</small></strong>
+                                    </p>
+                                    {{ direct.body }}
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                    </div>
                 </div>
             </div>
-        {% endfor %}
 
 
-    </div>
+            <form role="form" method="POST" action="{% url 'send_direct' %}">
+                {% csrf_token %}
+
+                <input type="hidden" class='form-control' name="to_user" value="{{ active_direct }}">
+                <small id="securityText" class="form-text text-muted">Never share Your personal data.</small>
+                <p><textarea class="form-control" name="body" placeholder="Add message"></textarea></p>
+                <p>
+                    <button type="submit" name="action" class="btn btn-outline-info float-left">Send</button>
+                </p>
 
 
-    <form role="form" method="POST" action="{% url 'send_direct' %}">
-        {% csrf_token %}
-
-        <input type="hidden" class='form-control' name="to_user" value="{{ active_direct }}">
-        <small id="securityText" class="form-text text-muted">Never share Your personal data.</small>
-        <p><textarea class="form-control" name="body" placeholder="Add message"></textarea></p>
-        <p>
-            <button type="submit" name="action" class="btn btn-outline-info float-left">Send</button>
-        </p>
-
-
-    </form>
+            </form>
 
 
 {% endblock %}
