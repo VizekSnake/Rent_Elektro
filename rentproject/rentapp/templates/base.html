@@ -30,26 +30,38 @@
                 </div>
                 <!-- Navbar Right Side -->
                 <div class="navbar-nav">
-                    {% if user.is_authenticated %}
-                        <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
-{#                        <a class="nav-item nav-link" href="{% url 'inbox' %}">Inbox</a>#}
-                        <a class="nav-item nav-link" href="{% url 'profile_update' %}">Settings</a>
-                        <a class="nav-item nav-link" href="{% url 'inbox' %}">Inbox</a>
-                    <a class="nav-item nav-link"href = '/profile/add_tool'>Add Your PowerTools</a>
-                    <a class="nav-item nav-link"href = '/profile/my_tools'>My PowerTools</a>
-                        <a class="nav-item nav-link"href = '/profile/rental_calendar'>Rental Calendar</a>
-                        <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
-                    {% else %}
-                        <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
-                        <a class="nav-item nav-link" href="{% url 'signup' %}">Register</a>
-                    {% endif %}
+                            {% if user.is_authenticated %}
+                                <div class="dropdown show">
+                        <a class="btn btn-warning dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Menu
+                        </a>
+
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
+                                {#                        <a class="nav-item nav-link" href="{% url 'inbox' %}">Inbox</a>#}
+                                <a class="dropdown-item" href="{% url 'profile_update' %}">Settings</a>
+                                <a class="dropdown-item" href="{% url 'inbox' %}">Inbox</a>
+                                <a class="dropdown-item" href='/profile/add_tool'>Add Your PowerTools</a>
+                                <a class="dropdown-item" href='/profile/my_tools'>My PowerTools</a>
+                                <a class="dropdown-item" href='/profile/lended'>Lended</a>
+                                <a class="dropdown-item" href='/profile/renteded'>Rented</a>
+                                <a class="dropdown-item" href='/profile/requests'>Requests</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                            {% else %}
+                                <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+                                <a class="nav-item nav-link" href="{% url 'signup' %}">Register</a>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </nav>
 </header>
 <main role="main" class="container">
-{#    <div class="row">#}
+    <div class="row">
         <div class="col">
             {% if messages %}
                 {% for message in messages %}
@@ -60,10 +72,10 @@
             {% endif %}
             {% block content %}{% endblock %}
         </div>
-    {% block pagination %}
-      {% endblock %}
+        {% block pagination %}
+        {% endblock %}
 
-{#</div>#}
+        {#</div>#}
 </main>
 
 <!-- Optional JavaScript -->

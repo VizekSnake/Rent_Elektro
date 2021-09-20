@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from captcha.fields import ReCaptchaField
 from captcha.widgets import ReCaptchaV2Checkbox
-from .models import Profile, PowerTool
+from .models import Profile, PowerTool, RentToolProposition
 # from django.db.models.signals import post_save
 # from django.dispatch import receiver
 
@@ -44,3 +44,17 @@ class ToolUserAddForm(forms.ModelForm):
     class Meta:
         model = PowerTool
         fields = ['brand', 'type', 'description', 'power', 'condition', 'deposit', 'price', 'tool_img']
+
+
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
+
+class RentToolPropoForm(forms.ModelForm):
+    class Meta:
+        model = RentToolProposition
+        fields = ['from_date', 'to_date']
+        widgets = {
+            'from_date': DateInput(),
+            'to_date': DateInput(),
+        }

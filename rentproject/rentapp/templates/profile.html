@@ -3,7 +3,7 @@
 {% block content %}
     <div class="content-section">
         <div class="media">
-            <img class="account-img" src="{{ user.profile.image.url }}">
+            <img class="account-img" src="{{ user.profile.image.url }}"/>
             <div class="media-body">
                 <h3 class="account-heading">{{ user.username }}</h3>
                 <p class="text-secondary">Your email: {{ user.email }}</p>
@@ -12,14 +12,5 @@
         </div>
         <!-- FORM HERE -->
     </div>
-    <div class="content-section">
-            <div class="media">
-                <img class="tool-img" src="{{ user.profile.image.url }}">
-                <div class="media-body">
-                    <h4 class="text-secondary">Tool: {{ user.email }}</h4>
-                    <p class="text-secondary">Reserved: {{ user.date_joined }}-{{ user.date_joined }}</p>
-                    <p class="text-secondary">Rented: {{ user.date_joined }}</p>
-                </div>
-            </div>
-        </div>
+
 {% endblock content %}

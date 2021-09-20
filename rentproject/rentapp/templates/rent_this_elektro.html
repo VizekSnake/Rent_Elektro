@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+        {% for tool in detail_of_tool %}
+            <div class="content-section">
+                    <img class="tool-img rounded mx-auto d-block" src="{{ tool.tool_img.url }}">
+
+                        <h5 class="text-secondary">Tool: {{ tool.get_type_display }}</h5>
+                        <p class="text-secondary">Power: {{ tool.power }}</p>
+                        <p class="text-secondary">Price: {{ tool.price }}/day</p></div>
+            <div class="content-section"><p class="text-secondary">Owner: {{ tool.owner }}</p>
+            <p class="text-secondary">Brand: {{ tool.brand }}</p><p class="text-secondary">Deposit Fee: {{ tool.deposit }}</p></div>
+    <div class="content-section">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Rent this Tool!</legend>
+                {{ rent_propo_form |crispy }}
+                <input type="hidden" name="elektro_id" value="{{ tool.id }}" >
+                {{ tool.id }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Send Request</button>
+            </div>
+        </form>
+    </div>
+    {% endfor %}
+{% endblock content %}

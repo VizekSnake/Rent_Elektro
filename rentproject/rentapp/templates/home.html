@@ -2,51 +2,47 @@
 {% load crispy_forms_tags %}
 {% block content %}
     {% load static %}
-<div class="content-section">
-<div class="col">
-            <p><a href="{% url 'home' %}"><img src="{% static "favicon/Rentelektrologo.svg" %}" width="50%" height="auto" class="col"/></a></div>
-            </p>
-        </div>
-        </div>
-    <div class="card-group">
-  <div class="card text-center">
-    <img class="card-img-top" src="{% static "hometoolmenu/power-saw.svg" %}" width="5%" height="auto" alt="Card image cap">
-    <div class="card-body">
-      <h5 class="card-title">Power Saw</h5>
-      <a href="#" class="btn btn-primary">Go somewhere</a>
+    <div class="content-section"><a href="{% url 'home' %}"><img src="{% static "favicon/Rentelektrologo.svg" %}"
+                                                                 width="50%" height="50%"/></a>
+
     </div>
-  </div>
-  <div class="card text-center">
-    <img class="card-img-top center" src="{% static "hometoolmenu/chainsaw.svg" %}" alt="Card image cap">
-    <div class="card-body">
-      <h5 class="card-title">Chainsaw</h5>
-      <a href="#" class="btn btn-primary">Go somewhere</a>
+    <div id="carouselIndicators" class="carousel slide" data-ride="carousel">
+  <ol class="carousel-indicators">
+    <li data-target="#carouselIndicators" data-slide-to="0" class="active"></li>
+    <li data-target="#carouselIndicators" data-slide-to="1"></li>
+    <li data-target="#carouselIndicators" data-slide-to="2"></li>
+  </ol>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img class="d-block w-100" src="media/slider/Emerson-RP-350-Standard-Press-Tool.jpg" alt="First slide">
     </div>
-  </div>
-  <div class="card text-center">
-    <img class="card-img-top" src="{% static "hometoolmenu/drill.svg" %}" alt="Card image cap">
-    <div class="card-body">
-      <h5 class="card-title">Drills</h5>
-      <a href="#" class="btn btn-primary">Go somewhere</a>
+    <div class="carousel-item">
+      <img class="d-block w-100" src="media/slider/pexels-pixabay-162534.jpg" alt="Second slide">
+    </div>
+    <div class="carousel-item">
+      <img class="d-block w-100" src="media/slider/theme-photos-Klby0nxseY8-unsplash.jpg" alt="Third slide">
     </div>
   </div>
 </div>
     <hr>
     {% for tool in tools %}
-
         <div class="content-section">
             <div class="media">
-                <img class="tool-img" src="{{ tool.tool_img }}">
+                <img class="tool-img" src="{{ tool.tool_img.url }}">
                 <div class="media-body">
-                    <h5 class="text-secondary">Tool: {{ tool.get_type_display}}</h5>
+                    <h5 class="text-secondary">Tool: {{ tool.get_type_display }}</h5>
                     <p class="text-secondary">Power: {{ tool.power }}</p>
                     <p class="text-secondary">Price: {{ tool.price }}/day</p>
                     <p class="text-secondary">Owner: {{ tool.owner }}
-                    <button class="btn btn-outline-info ml-1 float-right" type="submit">Details</button>
-                    <button class="btn btn-outline-info ml-1 float-right" type="submit">RentElectro</button></p>
+                        <a href="tool_detail/{{ tool.id }}" class="btn btn-outline-info ml-1 float-right" id="'tool_detail" type="submit">Details
+                        </a>
+                         <a href="rent_this_elektro/{{ tool.id }}" class="btn btn-outline-info ml-1 float-right"
+                           type="submit">RentElectro</a>
+                    </p>
 
                 </div>
             </div>
         </div>
+        <hr>
     {% endfor %}
 {% endblock %}

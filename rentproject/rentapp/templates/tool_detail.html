@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    {% for detail in tool %}
+        <div class="content-section">
+            <div class="media">
+                <img class="tool-img" src="{{ detail.tool_img.url }}">
+                <div class="media-body">
+                    <h5 class="text-secondary">Tool: {{ detail.get_type_display }}</h5>
+                    <p class="text-secondary">Power: {{ detail.power }} Price: {{ detail.price }}/day Owner: {{ detail.owner }}</p>
+                    <p class="text-secondary">Brand: {{ detail.brand }}  Deposit: {{ detail.deposit }}
+                </div>
+            </div>
+        </div>
+        <hr>
+    {% endfor %}
+{% endblock %}

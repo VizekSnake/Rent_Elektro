@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
-from .forms import SignUpForm, UserUpdateForm, ProfileUpdateForm, ToolUserAddForm
+from .forms import SignUpForm, UserUpdateForm, ProfileUpdateForm, ToolUserAddForm, RentToolPropoForm
 from django.contrib import messages
 from django.views import View
-from .models import PowerTool, Message
+from .models import PowerTool, Message, RentToolProposition
 from django.contrib.auth.models import User
 from django.template import loader, RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
@@ -17,6 +17,17 @@ from django.contrib.sites.shortcuts import get_current_site
 def home_view(request):
     tools = PowerTool.objects.all()
     return render(request, 'home.html', context={'tools': tools})
+
+
+def my_tools_view(request):
+    tools = PowerTool.objects.filter(owner=request.user)
+    return render(request, 'my_tools.html', context={'tools': tools})
+
+
+class ToolDetailView(View):
+    def get(self, request, tool_id):
+        tool = PowerTool.objects.filter(id=tool_id)
+        return render(request, 'tool_detail.html', context={'tool': tool})
 
 
 def profile(request):
@@ -119,6 +130,7 @@ def UserSearch(request):
         return render(request, 'search_user.html', context={
             'users': users_paginator})
 
+
 @login_required
 def Directs(request, username):
     user = request.user
@@ -169,3 +181,56 @@ def checkDirects(request):
         directs_count = Message.objects.filter(user=request.user, is_read=False).count()
 
     return {'directs_count': directs_count}
+
+
+class RentalView(View):
+    def get(self, request):
+        return render(request, 'rental_elektro.html')
+
+    # def post(self, request):
+    #     return
+
+
+class RentPropositionView(View):
+    def get(self, request, elektro_id):
+        detail_of_tool = PowerTool.objects.filter(id=elektro_id)
+        rent_propo_form = RentToolPropoForm(request.POST)
+        return render(request, 'rent_this_elektro.html',
+                      context={'rent_propo_form': rent_propo_form, 'detail_of_tool': detail_of_tool})
+
+    def post(self, request, *args, **kwargs):
+        rentform = RentToolPropoForm(request.POST)
+        tool_id = request.POST.get('elektro_id')
+        if rentform.is_valid():
+            rentform = rentform.save(commit=False)
+            rentform.by_user = request.user.profile
+            rentform.reservation_to_acceptation = True
+            rentform.tool = PowerTool.objects.get(pk=tool_id)
+            rentform.save()
+            messages.success(request, f'Request has been sent!')
+            return redirect('home')
+
+
+class RequestsView(View):
+    def get(self, request):
+        user = request.user
+        user_id = user.id
+        requests = RentToolProposition.objects.filter(tool__owner_id=user_id)
+        return render(request, 'requests.html', context={'requests': requests})
+
+
+class DeleteRequestView(View):
+    def get(self, request, req_id):
+        request_to_delete = RentToolProposition.objects.get(pk=req_id)
+        request_to_delete.delete()
+        messages.warning(request, f'Request has been rejected!')
+        return redirect('requests')
+
+
+class ApprovedRequestView(View):
+    def get(self, request, req_id):
+        request_to_update = RentToolProposition.objects.get(pk=req_id)
+        request_to_update.reservation_to_acceptation = False
+        request_to_update.rented = True
+        messages.success(request, f'Request has been approved!')
+        return redirect('requests')

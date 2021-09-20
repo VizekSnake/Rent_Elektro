@@ -10,7 +10,7 @@ class Profile(models.Model):
     first_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100, blank=True)
     email = models.EmailField(max_length=150)
-    image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+    image = models.ImageField(default='default.png', upload_to='profile_pics')
 
     def __str__(self):
         return f'{self.user.username} Profile'
@@ -25,7 +25,7 @@ def update_profile_signal(sender, instance, created, **kwargs):
 
 class Brand(models.Model):
     name = models.CharField(max_length=100, blank=True, unique=True)
-    logo = models.ImageField(default='default.jpg', upload_to='brand_logo')
+    logo = models.ImageField(default='/brand_pic/default.jpg', upload_to='brand_logo')
     history = models.TextField
 
     def __str__(self):
@@ -110,7 +110,7 @@ class PowerTool(models.Model):
     price = models.SmallIntegerField(null=False)
     deposit = models.SmallIntegerField(null=False)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    tool_img = models.ImageField(default='default.jpg', upload_to='tool_pic')
+    tool_img = models.ImageField(default='/tool_pic/default.jpg', upload_to='tool_pic')
 
     def __str__(self):
         return f'{self.brand} {self.get_type_display()} with power of {self.power} W'
@@ -153,3 +153,14 @@ class Message(models.Model):
                                                  is_read=False).count()
             })
         return users
+
+
+class RentToolProposition(models.Model):
+    from_date = models.DateField()
+    to_date = models.DateField()
+    by_user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    tool = models.ForeignKey(PowerTool, on_delete=models.CASCADE)
+    accepted_by_owner = models.BooleanField(default=False)
+    reservation_to_acceptation = models.BooleanField(default=False)
+    rented = models.BooleanField(default=False)
+

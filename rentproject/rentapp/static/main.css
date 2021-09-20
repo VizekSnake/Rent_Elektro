@@ -84,6 +84,9 @@ a.article-title:hover {
     width: 120px;
     margin-right: 20px;
     margin-bottom: 16px;
+    margin-top: 20px;
+    margin-left: 20px;
+    padding: 5px;
 }
 
 .account-heading {

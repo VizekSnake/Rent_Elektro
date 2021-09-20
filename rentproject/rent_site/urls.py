@@ -16,7 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from rentapp.views import home_view, SignupView, profile, ProfileUpdateView, ToolUserAddView, Inbox, \
-    Directs, NewConversation, SendDirect, UserSearch
+    Directs, NewConversation, SendDirect, UserSearch, my_tools_view, ToolDetailView, RentPropositionView, RequestsView, \
+    DeleteRequestView
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
@@ -25,6 +26,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # path('accounts/', include('allauth.urls')),
     path('', home_view, name="home"),
+    path('profile/my_tools', my_tools_view, name="my_tools"),
     path('signup/', SignupView.as_view(), name="signup"),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='logout.html'), name='logout'),
@@ -54,7 +56,11 @@ urlpatterns = [
     path('new/', UserSearch, name='usersearch'),
     path('new/<username>', NewConversation, name='newconversation'),
     path('send/', SendDirect, name='send_direct'),
+    path('tool_detail/<int:tool_id>', ToolDetailView.as_view(), name='tool_detail'),
+    path('rent_this_elektro/<int:elektro_id>', RentPropositionView.as_view(), name='rent_this_elektro'),
+    path('profile/requests', RequestsView.as_view(), name='requests'),
+    path('reject/<int:req_id>', DeleteRequestView.as_view(), name='reject')
 ]
 
-if settings.DEBUG:
+if settings.DEBUG is True:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

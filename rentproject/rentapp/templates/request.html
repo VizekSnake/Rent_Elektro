@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    {% load static %}
+    <h1>Your tools:</h1>
+    <hr>
+    {% for request in requests %}
+
+        <div class="content-section">
+            <div class="media">
+                <img class="tool-img" src="{{ tool.tool_img.url }}">
+                <div class="media-body">
+                    <h5 class="text-secondary">Tool: {{ tool.get_type_display}}</h5>
+                    <p class="text-secondary">Power: {{ tool.power }}</p>
+                    <p class="text-secondary">Price: {{ tool.price }}/day</p>
+                    <p class="text-secondary">Price: {{ tool.by_user }}/day</p>
+                    <button class="btn btn-outline-info ml-1 float-right" type="submit">Details</button>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
