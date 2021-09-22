@@ -5,12 +5,16 @@
         <div class="content-section">
             <div class="media">
                 <img class="tool-img" src="{{ detail.tool_img.url }}">
-                <div class="media-body">
+                <div class="media-body ml-1">
                     <h5 class="text-secondary">Tool: {{ detail.get_type_display }}</h5>
                     <p class="text-secondary">Power: {{ detail.power }} Price: {{ detail.price }}/day Owner: {{ detail.owner }}</p>
-                    <p class="text-secondary">Brand: {{ detail.brand }}  Deposit: {{ detail.deposit }}
+                    <p class="text-secondary">Brand: {{ detail.brand }}  Deposit: {{ detail.deposit }} <a href="/rent_this_elektro/{{ detail.id }}" class="btn btn-outline-info ml-1 float-right"
+                                                                                                          type="submit">RentElectro</a></p>
+
                 </div>
+
             </div>
+
         </div>
         <hr>
     {% endfor %}

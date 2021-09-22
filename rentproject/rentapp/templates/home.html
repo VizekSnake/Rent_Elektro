@@ -34,10 +34,14 @@
                     <p class="text-secondary">Power: {{ tool.power }}</p>
                     <p class="text-secondary">Price: {{ tool.price }}/day</p>
                     <p class="text-secondary">Owner: {{ tool.owner }}
-                        <a href="tool_detail/{{ tool.id }}" class="btn btn-outline-info ml-1 float-right" id="'tool_detail" type="submit">Details
+                        {% if user.is_authenticated %}
+                        <a href="tool_detail/{{ tool.id }}" class="btn btn-outline-primary ml-1 float-right" id="'tool_detail" type="submit">Details
                         </a>
                          <a href="rent_this_elektro/{{ tool.id }}" class="btn btn-outline-info ml-1 float-right"
-                           type="submit">RentElectro</a>
+                           type="submit">RentElectro</a>{% else %}
+                            <a href="login" class="btn btn-outline-info ml-1 float-right"
+                           type="submit">Login to view more!</a>
+                           {% endif %}
                     </p>
 
                 </div>

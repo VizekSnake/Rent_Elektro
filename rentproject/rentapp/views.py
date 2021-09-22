@@ -1,5 +1,7 @@
-from django.shortcuts import render, redirect
-from .forms import SignUpForm, UserUpdateForm, ProfileUpdateForm, ToolUserAddForm, RentToolPropoForm
+from datetime import datetime
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import SignUpForm, UserUpdateForm, ProfileUpdateForm, ToolUserAddForm, RentToolPropoForm, MyToolUpdateForm
 from django.contrib import messages
 from django.views import View
 from .models import PowerTool, Message, RentToolProposition
@@ -16,7 +18,14 @@ from django.contrib.sites.shortcuts import get_current_site
 
 def home_view(request):
     tools = PowerTool.objects.all()
-    return render(request, 'home.html', context={'tools': tools})
+    user = request.user
+    user_id = user.id
+    requests = RentToolProposition.objects.filter(rented=False, tool__owner_id=user_id,
+                                                  reservation_to_acceptation=True, isread=False)
+    requests = requests.count()
+    if requests > 0:
+        messages.success(request, f'You have got {requests} new requests')
+    return render(request, 'home.html', context={'tools': tools, 'requests': requests})
 
 
 def my_tools_view(request):
@@ -206,7 +215,11 @@ class RentPropositionView(View):
             rentform.by_user = request.user.profile
             rentform.reservation_to_acceptation = True
             rentform.tool = PowerTool.objects.get(pk=tool_id)
-            rentform.save()
+            if rentform.tool.owner_id == request.user.id:
+                messages.warning(request, f'Request has not been sent! Its Your tool!')
+                return redirect('home')
+            else:
+                rentform.save()
             messages.success(request, f'Request has been sent!')
             return redirect('home')
 
@@ -215,8 +228,27 @@ class RequestsView(View):
     def get(self, request):
         user = request.user
         user_id = user.id
-        requests = RentToolProposition.objects.filter(tool__owner_id=user_id)
+        requests = RentToolProposition.objects.filter(rented=False, tool__owner_id=user_id,
+                                                      reservation_to_acceptation=True)
+        rent_price = 0
+        days_of_rent = 0
+        for request_tool in requests:
+            request_tool.isread = True
+            start_date = datetime.strptime(str(request_tool.from_date), "%Y-%m-%d")
+            end_date = datetime.strptime(str(request_tool.to_date), "%Y-%m-%d")
+            request_tool.rent_price = abs(end_date - start_date).days * request_tool.tool.price
+            request_tool.save()
+            days_of_rent = abs(end_date - start_date).days
         return render(request, 'requests.html', context={'requests': requests})
+
+
+class LendedView(View):
+    def get(self, request):
+        user = request.user
+        user_id = user.id
+        requests = RentToolProposition.objects.filter(rented=True, reservation_to_acceptation=False,
+                                                      tool__owner_id=user_id)
+        return render(request, 'lended.html', context={'requests': requests})
 
 
 class DeleteRequestView(View):
@@ -227,10 +259,39 @@ class DeleteRequestView(View):
         return redirect('requests')
 
 
-class ApprovedRequestView(View):
+class ApproveRequestView(View):
     def get(self, request, req_id):
         request_to_update = RentToolProposition.objects.get(pk=req_id)
         request_to_update.reservation_to_acceptation = False
         request_to_update.rented = True
+        request_to_update.accepted_by_owner = True
+        request_to_update.save()
         messages.success(request, f'Request has been approved!')
         return redirect('requests')
+
+
+class RentedView(View):
+    def get(self, request):
+        user = request.user.profile
+        user_id = user.id
+        requests = RentToolProposition.objects.filter(rented=True,
+                                                      by_user=user_id)
+        return render(request, 'rented.html', context={'requests': requests, 'user_id': user_id})
+
+
+class MyToolUpdateView(View):
+    def get(self, request, my_tool_id):
+        my_tool_view = PowerTool.objects.get(pk=my_tool_id)
+        my_tool = get_object_or_404(PowerTool, id=my_tool_id)
+        my_tool_form = MyToolUpdateForm(instance=my_tool)
+        return render(request, 'my_tool_update_view.html',
+                      context={'my_tool_form': my_tool_form, 'my_tool_view': my_tool_view})
+
+    def post(self, request, *args, **kwargs):
+        my_tool_id = request.POST.get('my_tool_id')
+        my_tool = get_object_or_404(PowerTool, id=my_tool_id)
+        my_tool_form = MyToolUpdateForm(request.POST, request.FILES, instance=my_tool)
+        if my_tool_form.is_valid():
+            my_tool_form.save()
+            messages.success(request, f'Your tool has been updated!')
+            return redirect('/profile/my_tools')

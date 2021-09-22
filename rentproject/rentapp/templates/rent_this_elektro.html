@@ -4,11 +4,11 @@
 
         {% for tool in detail_of_tool %}
             <div class="content-section">
-                    <img class="tool-img rounded mx-auto d-block" src="{{ tool.tool_img.url }}">
-
+                    <img class="img-fluid rounded mx-auto d-block" src="{{ tool.tool_img.url }}">
+<div class = 'content-section'>
                         <h5 class="text-secondary">Tool: {{ tool.get_type_display }}</h5>
                         <p class="text-secondary">Power: {{ tool.power }}</p>
-                        <p class="text-secondary">Price: {{ tool.price }}/day</p></div>
+                        <p class="text-secondary">Price: {{ tool.price }}/day</p></div></div>
             <div class="content-section"><p class="text-secondary">Owner: {{ tool.owner }}</p>
             <p class="text-secondary">Brand: {{ tool.brand }}</p><p class="text-secondary">Deposit Fee: {{ tool.deposit }}</p></div>
     <div class="content-section">

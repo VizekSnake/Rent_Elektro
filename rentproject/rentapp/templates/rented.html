@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 {% block content %}
     {% load static %}
-    <h1>Requests for Your tools:</h1>
+    <h1>Your rented tools:</h1>
     <hr>
     {% for request in requests %}
 
@@ -11,12 +11,15 @@
                 <img class="tool-img" src="{{ request.tool.tool_img.url }}">
                 <div class="media-body">
                     <h5 class="text-secondary">Tool: {{ request.tool.get_type_display}}</h5>
-                    <p class="text-secondary">Send by: {{ request.by_user }}</p>
+                    <p class="text-secondary">lended by: {{ request.tool.owner }}</p>
+                    <p class="text-secondary">Contact for details: <a href="mailto:{{ request.tool.owner.email }}">{{ request.tool.owner.email }}</a></p>
+
                     <p class="text-secondary">From: {{ request.from_date }}</p>
                     <p class="text-secondary">To: {{ request.to_date }}</p>
-                    <p class="text-secondary">Overall price of renting: <h4>{{ request.rent_price }}$</h4></p>
-                    <a href="/reject/{{ request.id }}" class="btn btn-outline-danger ml-1 float-right" type="submit">Reject</a>
-                    <a href="/approve/{{ request.id }}" class="btn btn-outline-success ml-1 float-right" type="submit">Approve</a>
+                    <p class="text-secondary">Overall_price of renting: {{ request.rent_price }}</p>
+                    <p class="text-secondary">Open conversation online: <a href="/new/{{request.tool.owner}}">Lets chat!</a></p>
+
+                    <button class="btn btn-outline-info ml-1 float-right" type="submit">Reminder</button>
                 </div>
             </div>
         </div>

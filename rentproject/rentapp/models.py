@@ -13,7 +13,7 @@ class Profile(models.Model):
     image = models.ImageField(default='default.png', upload_to='profile_pics')
 
     def __str__(self):
-        return f'{self.user.username} Profile'
+        return f'{self.user.username}'
 
 
 @receiver(post_save, sender=User)
@@ -163,4 +163,8 @@ class RentToolProposition(models.Model):
     accepted_by_owner = models.BooleanField(default=False)
     reservation_to_acceptation = models.BooleanField(default=False)
     rented = models.BooleanField(default=False)
+    isread = models.BooleanField(default=False)
+    rent_price = models.IntegerField(null=True)
 
+    def __str__(self):
+        return f'{self.tool}'

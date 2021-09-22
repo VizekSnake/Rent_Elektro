@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from captcha.fields import ReCaptchaField
 from captcha.widgets import ReCaptchaV2Checkbox
 from .models import Profile, PowerTool, RentToolProposition
+
+
 # from django.db.models.signals import post_save
 # from django.dispatch import receiver
 
@@ -58,3 +60,9 @@ class RentToolPropoForm(forms.ModelForm):
             'from_date': DateInput(),
             'to_date': DateInput(),
         }
+
+
+class MyToolUpdateForm(forms.ModelForm):
+    class Meta:
+        model = PowerTool
+        fields = ['price', 'description', 'power', 'type', 'condition', 'price', 'deposit','tool_img']
