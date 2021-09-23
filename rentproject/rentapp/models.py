@@ -32,6 +32,13 @@ class Brand(models.Model):
         return f'{self.name} tools'
 
 
+class Category(models.Model):
+    category = models.CharField(max_length=128)
+
+    def __str__(self):
+        return f'{self.category} '
+
+
 class PowerTool(models.Model):
     CORDLESSDRILL = 'CD'
     HAMMERDRILL = 'HD'
@@ -111,6 +118,7 @@ class PowerTool(models.Model):
     deposit = models.SmallIntegerField(null=False)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     tool_img = models.ImageField(default='/tool_pic/default.jpg', upload_to='tool_pic')
+    category = models.ManyToManyField(Category)
 
     def __str__(self):
         return f'{self.brand} {self.get_type_display()} with power of {self.power} W'
@@ -165,6 +173,13 @@ class RentToolProposition(models.Model):
     rented = models.BooleanField(default=False)
     isread = models.BooleanField(default=False)
     rent_price = models.IntegerField(null=True)
+    rejected = models.BooleanField(default=False)
+    canceled = models.BooleanField(default=False)
+    tool_owner_view = models.BooleanField(default=True)
+    by_user_view = models.BooleanField(default=True)
+    by_user_return = models.BooleanField(default=False)
+    tool_owner_return = models.BooleanField(default=False)
+
 
     def __str__(self):
-        return f'{self.tool}'
+        return f'Proposition of rent :{self.tool} from {self.by_user}'

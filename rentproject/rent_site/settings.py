@@ -79,7 +79,7 @@ DATABASES = {
     'default': {
         'HOST': '127.0.0.1',
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'final_project',
+        'NAME': 'final_project3',
         'USER': 'postgres',
         'PASSWORD': 'coderslab',
     }

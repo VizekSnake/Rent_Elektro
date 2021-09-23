@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    {% load static %}
+    <h1>Requests for tools:</h1>
+    <hr>
+    {% for request in requests %}
+
+        <div class="content-section">
+            <div class="media">
+                <img class="tool-img" src="{{ request.tool.tool_img.url }}">
+                {% if request.rejected %}
+                    <div class="media-body">
+                    <h5 class="text-secondary">Tool: {{ request.tool.get_type_display}}</h5>
+                    <p class="text-secondary">Send by: {{ request.by_user }}</p>
+                    <p class="text-secondary">From: {{ request.from_date }}</p>
+                    <p class="text-secondary">To: {{ request.to_date }}</p>
+                    <p class="text-secondary">Overall price of renting: <h4>{{ request.rent_price }}$</h4></p>
+                    <a href="/hide/{{ request.id }}" class="btn btn-outline-danger ml-1  align-self-center mr-3" >REJECTED BY OWNER</a>
+                </div>
+                {% else%}
+                <div class="media-body">
+                    <h5 class="text-secondary">Tool: {{ request.tool.get_type_display}}</h5>
+                    <p class="text-secondary">Send by: {{ request.by_user }}</p>
+                    <p class="text-secondary">From: {{ request.from_date }}</p>
+                    <p class="text-secondary">To: {{ request.to_date }}</p>
+                    <p class="text-secondary">Overall price of renting: <h4>{{ request.rent_price }}$</h4></p>
+                    <a href="/cancel/{{ request.id }}" class="btn btn-outline-danger ml-1 float-right" type="submit">Cancel</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

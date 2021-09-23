@@ -45,7 +45,8 @@ class ProfileUpdateForm(forms.ModelForm):
 class ToolUserAddForm(forms.ModelForm):
     class Meta:
         model = PowerTool
-        fields = ['brand', 'type', 'description', 'power', 'condition', 'deposit', 'price', 'tool_img']
+        fields = ['brand', 'type', 'description', 'power', 'condition', 'deposit', 'price', 'tool_img', 'category']
+        widgets = {'category': forms.CheckboxSelectMultiple, }
 
 
 class DateInput(forms.DateInput):
@@ -66,3 +67,9 @@ class MyToolUpdateForm(forms.ModelForm):
     class Meta:
         model = PowerTool
         fields = ['price', 'description', 'power', 'type', 'condition', 'price', 'deposit','tool_img']
+
+
+class SearchBarToolForm(forms.ModelForm):
+    class Meta:
+        model = PowerTool
+        fields = ['type']

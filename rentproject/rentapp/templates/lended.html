@@ -5,7 +5,7 @@
     <h1>Your lended tools:</h1>
     <hr>
     {% for request in requests %}
-
+{% if not request.tool_owner_return %}
         <div class="content-section">
             <div class="media">
                 <img class="tool-img" src="{{ request.tool.tool_img.url }}">
@@ -18,9 +18,27 @@
                     <p class="text-secondary">To: {{ request.to_date }}</p>
                     <p class="text-secondary">Open conversation online: <a href="/new/{{request.by_user}}">Lets chat!</a></p>
 
-                    <button class="btn btn-outline-info ml-1 float-right" type="submit">Reminder</button>
+                    <a href ='/ownertoolreturn/{{ request.id }}' class="btn btn-outline-primary ml-1 float-right" type="submit">Confirm Return</a>
                 </div>
             </div>
         </div>
+        {% else %}
+        <div class="content-section">
+            <div class="media">
+                <img class="tool-img" src="{{ request.tool.tool_img.url }}">
+                <div class="media-body">
+                    <h5 class="text-secondary">Tool: {{ request.tool.get_type_display}}</h5>
+                    <p class="text-secondary">Rented by: {{ request.by_user }}</p>
+                    <p class="text-secondary">Contact for details: <a href="mailto:{{ request.by_user.email }}">{{ request.by_user.email }}</a></p>
+
+                    <p class="text-secondary">From: {{ request.from_date }}</p>
+                    <p class="text-secondary">To: {{ request.to_date }}</p>
+                    <p class="text-secondary">Open conversation online: <a href="/new/{{request.by_user}}">Lets chat!</a></p>
+
+                    <button class="btn btn-outline-success ml-1 float-right" type="submit">Confirmed Return</button>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     {% endfor %}
 {% endblock %}

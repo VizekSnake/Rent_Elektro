@@ -1,7 +1,8 @@
 from datetime import datetime
 
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import SignUpForm, UserUpdateForm, ProfileUpdateForm, ToolUserAddForm, RentToolPropoForm, MyToolUpdateForm
+from .forms import SignUpForm, UserUpdateForm, ProfileUpdateForm, ToolUserAddForm, RentToolPropoForm, MyToolUpdateForm, \
+    SearchBarToolForm
 from django.contrib import messages
 from django.views import View
 from .models import PowerTool, Message, RentToolProposition
@@ -215,6 +216,13 @@ class RentPropositionView(View):
             rentform.by_user = request.user.profile
             rentform.reservation_to_acceptation = True
             rentform.tool = PowerTool.objects.get(pk=tool_id)
+            start_date = datetime.strptime(str(rentform.from_date), "%Y-%m-%d")
+            today = datetime.strptime(datetime.today().strftime('%Y-%m-%d'), "%Y-%m-%d")
+            days_of_rent = (start_date - today).days
+            if days_of_rent < 0:
+                messages.warning(request,
+                                 f'Request has not been sent! Dates are incorrect! You cant rent in past time!')
+                return redirect(f'/rent_this_elektro/{tool_id}')
             if rentform.tool.owner_id == request.user.id:
                 messages.warning(request, f'Request has not been sent! Its Your tool!')
                 return redirect('home')
@@ -229,24 +237,55 @@ class RequestsView(View):
         user = request.user
         user_id = user.id
         requests = RentToolProposition.objects.filter(rented=False, tool__owner_id=user_id,
-                                                      reservation_to_acceptation=True)
+                                                      reservation_to_acceptation=True, tool_owner_view=True)
         rent_price = 0
         days_of_rent = 0
         for request_tool in requests:
             request_tool.isread = True
             start_date = datetime.strptime(str(request_tool.from_date), "%Y-%m-%d")
             end_date = datetime.strptime(str(request_tool.to_date), "%Y-%m-%d")
-            request_tool.rent_price = abs(end_date - start_date).days * request_tool.tool.price
+            if request_tool.rent_price is None:
+                days_of_rent = abs(end_date - start_date).days
+                if days_of_rent == 0:
+                    request_tool.rent_price = 1 * request_tool.tool.price
+                elif days_of_rent > 0:
+                    request_tool.rent_price = abs(end_date - start_date).days * request_tool.tool.price
+                request_tool.save()
+            else:
+                days_of_rent = (end_date - start_date).days
+                if days_of_rent == 0:
+                    request_tool.rent_price = 1 * request_tool.tool.price
+                elif days_of_rent > 0:
+                    request_tool.rent_price = abs(end_date - start_date).days * request_tool.tool.price
+                request_tool.save()
+        return render(request, 'requests.html', context={'requests': requests, 'days_of_rent': days_of_rent})
+
+
+class MyRequestsView(View):
+    def get(self, request):
+        user = request.user
+        user_id = user.id
+        requests = RentToolProposition.objects.filter(rented=False, by_user=user_id,
+                                                      reservation_to_acceptation=True, by_user_view=True)
+        rent_price = 0
+        days_of_rent = 0
+        for request_tool in requests:
+            start_date = datetime.strptime(str(request_tool.from_date), "%Y-%m-%d")
+            end_date = datetime.strptime(str(request_tool.to_date), "%Y-%m-%d")
+            days_of_rent = (end_date - start_date).days
+            if days_of_rent == 0:
+                request_tool.rent_price = 1 * request_tool.tool.price
+            elif days_of_rent > 0:
+                request_tool.rent_price = abs(end_date - start_date).days * request_tool.tool.price
             request_tool.save()
-            days_of_rent = abs(end_date - start_date).days
-        return render(request, 'requests.html', context={'requests': requests})
+        return render(request, 'my_requests.html', context={'requests': requests})
 
 
 class LendedView(View):
     def get(self, request):
         user = request.user
         user_id = user.id
-        requests = RentToolProposition.objects.filter(rented=True, reservation_to_acceptation=False,
+        requests = RentToolProposition.objects.filter(reservation_to_acceptation=False,
                                                       tool__owner_id=user_id)
         return render(request, 'lended.html', context={'requests': requests})
 
@@ -259,12 +298,42 @@ class DeleteRequestView(View):
         return redirect('requests')
 
 
+class RejectRequestView(View):
+    def get(self, request, req_id):
+        request_to_reject = RentToolProposition.objects.get(pk=req_id)
+        request_to_reject.rejected = True
+        request_to_reject.tool_owner_view = False
+        request_to_reject.save()
+        messages.warning(request, f'Request has been rejected!')
+        return redirect('requests')
+
+
+class HideView(View):
+    def get(self, request, req_id):
+        request_to_reject = RentToolProposition.objects.get(pk=req_id)
+        request_to_reject.rejected = True
+        request_to_reject.user_owner_view = False
+        request_to_reject.save()
+        messages.warning(request, f'Request has been dismiss!')
+        return redirect('requests')
+
+
+class CancelRequestView(View):
+    def get(self, request, req_id):
+        request_to_cancel = RentToolProposition.objects.get(pk=req_id)
+        request_to_cancel.canceled = True
+        request_to_cancel.by_user_view = False
+        request_to_cancel.save()
+        messages.warning(request, f'Request has been canceled!')
+        return redirect('my_requests')
+
+
 class ApproveRequestView(View):
     def get(self, request, req_id):
         request_to_update = RentToolProposition.objects.get(pk=req_id)
         request_to_update.reservation_to_acceptation = False
-        request_to_update.rented = True
         request_to_update.accepted_by_owner = True
+        request_to_update.rented = True
         request_to_update.save()
         messages.success(request, f'Request has been approved!')
         return redirect('requests')
@@ -274,9 +343,26 @@ class RentedView(View):
     def get(self, request):
         user = request.user.profile
         user_id = user.id
-        requests = RentToolProposition.objects.filter(rented=True,
-                                                      by_user=user_id)
+        requests = RentToolProposition.objects.filter(by_user=user_id)
         return render(request, 'rented.html', context={'requests': requests, 'user_id': user_id})
+
+
+class UserToolReturnView(View):
+    def get(self, request, req_id):
+        request_return_tool = RentToolProposition.objects.get(pk=req_id)
+        request_return_tool.by_user_return = True
+        request_return_tool.save()
+        return redirect('rented')
+
+
+class OwnerToolReturnView(View):
+    def get(self, request, req_id):
+        request_return_tool = RentToolProposition.objects.get(pk=req_id, tool_owner_view=True)
+        request_return_tool.tool_owner_return = True
+        request_return_tool.rented = False
+        request_return_tool.save()
+        messages.success(request, f'Tool has been returned!')
+        return redirect('lended')
 
 
 class MyToolUpdateView(View):
@@ -295,3 +381,17 @@ class MyToolUpdateView(View):
             my_tool_form.save()
             messages.success(request, f'Your tool has been updated!')
             return redirect('/profile/my_tools')
+
+
+class SearchToolView(View):
+    def get(self, request):
+        search_form = SearchBarToolForm(request.POST)
+        return render(request, 'search_tool.html', context={'search_form': search_form})
+
+    def post(self, request):
+        search_form = SearchBarToolForm(request.POST)
+        if search_form.is_valid():
+            searched = search_form.cleaned_data['type']
+            filtrated_tools = PowerTool.objects.filter(type=searched)
+        return render(request, 'search_tool.html',
+                      context={"search_form": search_form, 'filtrated_tools': filtrated_tools})

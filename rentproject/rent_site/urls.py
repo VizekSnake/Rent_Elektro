@@ -17,7 +17,8 @@ from django.contrib import admin
 from django.urls import path
 from rentapp.views import home_view, SignupView, profile, ProfileUpdateView, ToolUserAddView, Inbox, \
     Directs, NewConversation, SendDirect, UserSearch, my_tools_view, ToolDetailView, RentPropositionView, RequestsView, \
-    DeleteRequestView, ApproveRequestView, LendedView, RentedView, MyToolUpdateView
+    DeleteRequestView, ApproveRequestView, LendedView, RentedView, MyToolUpdateView, MyRequestsView, RejectRequestView, \
+    CancelRequestView, OwnerToolReturnView, UserToolReturnView, HideView, SearchToolView
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
@@ -59,11 +60,17 @@ urlpatterns = [
     path('tool_detail/<int:tool_id>', ToolDetailView.as_view(), name='tool_detail'),
     path('rent_this_elektro/<int:elektro_id>', RentPropositionView.as_view(), name='rent_this_elektro'),
     path('profile/requests', RequestsView.as_view(), name='requests'),
-    path('reject/<int:req_id>', DeleteRequestView.as_view(), name='reject'),
+    path('profile/my_requests', MyRequestsView.as_view(), name='my_requests'),
+    path('reject/<int:req_id>', RejectRequestView.as_view(), name='reject'),
+    path('cancel/<int:req_id>', CancelRequestView.as_view(), name='reject'),
     path('approve/<int:req_id>', ApproveRequestView.as_view(), name='approve'),
     path('profile/my_tool/update/<int:my_tool_id>', MyToolUpdateView.as_view(), name='tool_update'),
     path('profile/lended/', LendedView.as_view(), name='lended'),
-    path('profile/rented/', RentedView.as_view(), name='lended')
+    path('profile/rented/', RentedView.as_view(), name='rented'),
+    path('ownertoolreturn/<int:req_id>', OwnerToolReturnView.as_view(), name='owner_tool_return'),
+    path('usertoolreturn/<int:req_id>', UserToolReturnView.as_view(), name='user_tool_return'),
+    path('hide/<int:req_id>', HideView.as_view(), name='hide'),
+    path('search/tool', SearchToolView.as_view(), name = 'search')
 ]
 
 if settings.DEBUG is True:

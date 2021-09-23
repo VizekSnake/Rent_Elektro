@@ -7,21 +7,63 @@
     {% for request in requests %}
 
         <div class="content-section">
-            <div class="media">
-                <img class="tool-img" src="{{ request.tool.tool_img.url }}">
-                <div class="media-body">
-                    <h5 class="text-secondary">Tool: {{ request.tool.get_type_display}}</h5>
-                    <p class="text-secondary">lended by: {{ request.tool.owner }}</p>
-                    <p class="text-secondary">Contact for details: <a href="mailto:{{ request.tool.owner.email }}">{{ request.tool.owner.email }}</a></p>
+            {% if request.by_user_return and not request.tool_owner_return %}
+                <div class="media">
+                    <img class="tool-img" src="{{ request.tool.tool_img.url }}">
+                    <div class="media-body">
+                        <h5 class="text-secondary">Tool: {{ request.tool.get_type_display }}</h5>
+                        <p class="text-secondary">lended by: {{ request.tool.owner }}</p>
+                        <p class="text-secondary">Contact for details: <a
+                                href="mailto:{{ request.tool.owner.email }}">{{ request.tool.owner.email }}</a></p>
 
-                    <p class="text-secondary">From: {{ request.from_date }}</p>
-                    <p class="text-secondary">To: {{ request.to_date }}</p>
-                    <p class="text-secondary">Overall_price of renting: {{ request.rent_price }}</p>
-                    <p class="text-secondary">Open conversation online: <a href="/new/{{request.tool.owner}}">Lets chat!</a></p>
+                        <p class="text-secondary">From: {{ request.from_date }}</p>
+                        <p class="text-secondary">To: {{ request.to_date }}</p>
+                        <p class="text-secondary">Overall_price of renting: {{ request.rent_price }}</p>
+                        <p class="text-secondary">Open conversation online: <a href="/new/{{ request.tool.owner }}">Lets
+                            chat!</a></p>
+                        <button class="btn btn-outline-info ml-1 float-right" type="submit">Returned - waiting for owner
+                            confirmation
+                        </button>
 
-                    <button class="btn btn-outline-info ml-1 float-right" type="submit">Reminder</button>
+                    </div>
                 </div>
-            </div>
-        </div>
+            {% elif request.by_user_return and request.tool_owner_return %}
+                <div class="media">
+                    <img class="tool-img" src="{{ request.tool.tool_img.url }}">
+                    <div class="media-body">
+                        <h5 class="text-secondary">Tool: {{ request.tool.get_type_display }}</h5>
+                        <p class="text-secondary">lended by: {{ request.tool.owner }}</p>
+                        <p class="text-secondary">Contact for details: <a
+                                href="mailto:{{ request.tool.owner.email }}">{{ request.tool.owner.email }}</a></p>
+
+                        <p class="text-secondary">From: {{ request.from_date }}</p>
+                        <p class="text-secondary">To: {{ request.to_date }}</p>
+                        <p class="text-secondary">Overall_price of renting: {{ request.rent_price }}</p>
+                        <p class="text-secondary">Open conversation online: <a href="/new/{{ request.tool.owner }}">Lets
+                            chat!</a></p>
+                        <button class="btn btn-outline-success ml-1 float-right" type="submit">Returned succesfully - confirmed</button>
+                    </div>
+                </div>
+            {% else %}
+                <div class="media">
+                    <img class="tool-img" src="{{ request.tool.tool_img.url }}">
+                    <div class="media-body">
+                        <h5 class="text-secondary">Tool: {{ request.tool.get_type_display }}</h5>
+                        <p class="text-secondary">lended by: {{ request.tool.owner }}</p>
+                        <p class="text-secondary">Contact for details: <a
+                                href="mailto:{{ request.tool.owner.email }}">{{ request.tool.owner.email }}</a></p>
+
+                        <p class="text-secondary">From: {{ request.from_date }}</p>
+                        <p class="text-secondary">To: {{ request.to_date }}</p>
+                        <p class="text-secondary">Overall price of renting: {{ request.rent_price }} $</p>
+                        <p class="text-secondary">Open conversation online: <a href="/new/{{ request.tool.owner }}">Lets
+                            chat!</a></p>
+                        <a href="/usertoolreturn/{{ request.id }}" class="btn btn-outline-info ml-1 float-right"
+                           type="submit">Return tool</a>
+
+                    </div>
+                </div>
+                </div>
+            {% endif %}
     {% endfor %}
 {% endblock %}
