@@ -15,6 +15,7 @@ from django.core.paginator import Paginator
 from django.contrib.sites.shortcuts import get_current_site
 
 
+
 # Create your models here.
 
 def home_view(request):
@@ -28,7 +29,7 @@ def home_view(request):
         messages.success(request, f'You have got {requests} new requests')
     return render(request, 'home.html', context={'tools': tools, 'requests': requests})
 
-
+@login_required
 def my_tools_view(request):
     tools = PowerTool.objects.filter(owner=request.user)
     return render(request, 'my_tools.html', context={'tools': tools})
@@ -39,7 +40,7 @@ class ToolDetailView(View):
         tool = PowerTool.objects.filter(id=tool_id)
         return render(request, 'tool_detail.html', context={'tool': tool})
 
-
+@login_required
 def profile(request):
     return render(request, 'profile.html')
 

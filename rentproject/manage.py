@@ -2,6 +2,10 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+import warnings
+# from django.utils.deprecation import RemovedInDjango41Warning
+#
+# warnings.filterwarnings('always', category=RemovedInDjango41Warning)
 
 
 def main():

@@ -16,4 +16,5 @@
     <hr>
         <a href = '/change-password'><button class="btn btn-outline-info" type="submit">Change password</button></a>
     </div>
+    <a class="btn btn-outline-primary" href="{{request.META.HTTP_REFERER|escape}}">Back</a>
 {% endblock content %}
