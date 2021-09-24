@@ -1,8 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-# from captcha.fields import ReCaptchaField
-# from captcha.widgets import ReCaptchaV2Checkbox
+from captcha.fields import ReCaptchaField
+from captcha.widgets import ReCaptchaV2Checkbox
 from .models import Profile, PowerTool, RentToolProposition
 
 
@@ -14,7 +14,7 @@ class SignUpForm(UserCreationForm):
     first_name = forms.CharField(max_length=100, help_text='First Name')
     last_name = forms.CharField(max_length=100, help_text='Last Name')
     email = forms.EmailField(max_length=150, help_text='Email')
-    # captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox)
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox)
 
     class Meta:
         model = User
@@ -45,8 +45,8 @@ class ProfileUpdateForm(forms.ModelForm):
 class ToolUserAddForm(forms.ModelForm):
     class Meta:
         model = PowerTool
-        fields = ['brand', 'type', 'description', 'power', 'condition', 'deposit', 'price', 'tool_img', 'category']
-        widgets = {'category': forms.CheckboxSelectMultiple, }
+        fields = ['brand', 'type', 'description', 'power', 'condition', 'deposit', 'price', 'tool_img']
+        # widgets = {'category': forms.CheckboxSelectMultiple, }
 
 
 class DateInput(forms.DateInput):
@@ -66,8 +66,7 @@ class RentToolPropoForm(forms.ModelForm):
 class MyToolUpdateForm(forms.ModelForm):
     class Meta:
         model = PowerTool
-        fields = ['price', 'description', 'power', 'type', 'condition', 'price', 'deposit','tool_img']
-
+        fields = ['price', 'description', 'power', 'type', 'condition', 'price', 'deposit','tool_img', 'category']
 
 class SearchBarToolForm(forms.ModelForm):
     class Meta:

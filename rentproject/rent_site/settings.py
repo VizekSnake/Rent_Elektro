@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 'django.contrib.sites',
-    # 'captcha',
+    'captcha',
     'rentapp',
     'crispy_forms',
     'pytest_django',
@@ -133,5 +133,6 @@ LOGIN_URL = 'login'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# RECAPTCHA_PUBLIC_KEY = '6LdL1VYcAAAAAKTXoETxRpB09EFHYNWe_m4Btnne'
-# RECAPTCHA_PRIVATE_KEY = '6LdL1VYcAAAAALRgp8seTITljS7w8qf6UBnu0ZZG'
+RECAPTCHA_PUBLIC_KEY = '6LdL1VYcAAAAAKTXoETxRpB09EFHYNWe_m4Btnne'
+RECAPTCHA_PRIVATE_KEY = '6LdL1VYcAAAAALRgp8seTITljS7w8qf6UBnu0ZZG'
+

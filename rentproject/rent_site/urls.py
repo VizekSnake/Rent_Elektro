@@ -52,7 +52,7 @@ urlpatterns = [
     path('profile/', profile, name='profile'),
     path('profile/settings', login_required(ProfileUpdateView.as_view()),
          name='profile_update'),
-    path('profile/add_tool', login_required(ToolUserAddView.as_view()), name='add_user_tool'),
+    path('profile/add_tool/', login_required(ToolUserAddView.as_view()), name='add_user_tool'),
     path('inbox/', Inbox, name='inbox'),
     path('directs/<username>', Directs, name='directs'),
     path('new/', UserSearch, name='usersearch'),

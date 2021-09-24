@@ -5,20 +5,18 @@ from .forms import SignUpForm, UserUpdateForm, ProfileUpdateForm, ToolUserAddFor
     SearchBarToolForm
 from django.contrib import messages
 from django.views import View
-from .models import PowerTool, Message, RentToolProposition
+from .models import PowerTool, Message, RentToolProposition, Category
 from django.contrib.auth.models import User
-from django.template import loader, RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.core.paginator import Paginator
-from django.contrib.sites.shortcuts import get_current_site
-
 
 
 # Create your models here.
 
 def home_view(request):
+    """  List of all tools added to service, also filtering user requests to see if there are some unread"""
     tools = PowerTool.objects.all()
     user = request.user
     user_id = user.id
@@ -28,6 +26,7 @@ def home_view(request):
     if requests > 0:
         messages.success(request, f'You have got {requests} new requests')
     return render(request, 'home.html', context={'tools': tools, 'requests': requests})
+
 
 @login_required
 def my_tools_view(request):
@@ -40,12 +39,15 @@ class ToolDetailView(View):
         tool = PowerTool.objects.filter(id=tool_id)
         return render(request, 'tool_detail.html', context={'tool': tool})
 
+
 @login_required
 def profile(request):
     return render(request, 'profile.html')
 
 
 class SignupView(View):
+    """  Standard singup form with captcha"""
+
     def get(self, request):
         form = SignUpForm()
         return render(request, 'signup.html', {'form': form})
@@ -65,6 +67,8 @@ class SignupView(View):
 
 
 class ProfileUpdateView(View):
+    """  View where You can change Your username, email adress or password"""
+
     def get(self, request):
         u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=request.user.profile)
@@ -84,23 +88,35 @@ class ProfileUpdateView(View):
 
 
 class ToolUserAddView(View):
+    """  View to add User Tools to rent """
+
     def get(self, request):
         tool_addform = ToolUserAddForm(request.POST)
         return render(request, 'add_user_tool.html', context={'tool_addform': tool_addform})
 
     def post(self, request):
-        user = request.user
-        tool_addform = ToolUserAddForm(request.POST, initial={'owner': user.id})
+        tool_addform = ToolUserAddForm(request.POST)
         if tool_addform.is_valid():
             tool = tool_addform.save(commit=False)
             tool.owner = request.user
+            # tool = tool_addform.save(commit=False)
+            # default_category_of_tool = Category.objects.get(category='Other')
             tool.save()
+            # if tool.category is None:
+            #     tool.category = default_category_of_tool
+            #     tool.save()
+            # else:
+            #     tool.save()
             messages.success(request, f'Your tool has been added!')
+            return redirect('profile')
+        else:
+            messages.warning(request, f'Something went wrong!')
             return redirect('profile')
 
 
 @login_required
 def Inbox(request):
+    """  All messages from users  """
     messages = Message.get_messages(user=request.user)
     active_direct = None
     directs = None
@@ -121,6 +137,7 @@ def Inbox(request):
 
 @login_required
 def UserSearch(request):
+    """  Search engine for userschat  """
     query = request.GET.get("q")
     context = {}
 
@@ -161,6 +178,7 @@ def Directs(request, username):
 
 @login_required
 def NewConversation(request, username):
+    """  New conversations from requests  """
     from_user = request.user
     body = ''
     try:
@@ -203,6 +221,8 @@ class RentalView(View):
 
 
 class RentPropositionView(View):
+    """  Renting user add form for request for tool  """
+
     def get(self, request, elektro_id):
         detail_of_tool = PowerTool.objects.filter(id=elektro_id)
         rent_propo_form = RentToolPropoForm(request.POST)
@@ -234,6 +254,8 @@ class RentPropositionView(View):
 
 
 class RequestsView(View):
+    """  List of all requests You got without action  """
+
     def get(self, request):
         user = request.user
         user_id = user.id
@@ -263,6 +285,7 @@ class RequestsView(View):
 
 
 class MyRequestsView(View):
+    """  List of sended Requests from user """
     def get(self, request):
         user = request.user
         user_id = user.id
@@ -283,6 +306,8 @@ class MyRequestsView(View):
 
 
 class LendedView(View):
+    """  List of all tools you are renting now  """
+
     def get(self, request):
         user = request.user
         user_id = user.id
@@ -292,6 +317,7 @@ class LendedView(View):
 
 
 class DeleteRequestView(View):
+    """  View to delete request from user  """
     def get(self, request, req_id):
         request_to_delete = RentToolProposition.objects.get(pk=req_id)
         request_to_delete.delete()
@@ -300,6 +326,8 @@ class DeleteRequestView(View):
 
 
 class RejectRequestView(View):
+    """  View to reject request from user  """
+
     def get(self, request, req_id):
         request_to_reject = RentToolProposition.objects.get(pk=req_id)
         request_to_reject.rejected = True
@@ -310,6 +338,7 @@ class RejectRequestView(View):
 
 
 class HideView(View):
+    """  View hiding request for tool from User """
     def get(self, request, req_id):
         request_to_reject = RentToolProposition.objects.get(pk=req_id)
         request_to_reject.rejected = True
@@ -320,6 +349,7 @@ class HideView(View):
 
 
 class CancelRequestView(View):
+    """  View enabling cancellection of request for tool from User """
     def get(self, request, req_id):
         request_to_cancel = RentToolProposition.objects.get(pk=req_id)
         request_to_cancel.canceled = True
@@ -330,6 +360,8 @@ class CancelRequestView(View):
 
 
 class ApproveRequestView(View):
+    """  Approving request View """
+
     def get(self, request, req_id):
         request_to_update = RentToolProposition.objects.get(pk=req_id)
         request_to_update.reservation_to_acceptation = False
@@ -341,6 +373,7 @@ class ApproveRequestView(View):
 
 
 class RentedView(View):
+    """  Active rented tools  """
     def get(self, request):
         user = request.user.profile
         user_id = user.id
@@ -349,6 +382,8 @@ class RentedView(View):
 
 
 class UserToolReturnView(View):
+    """  Request to return from User  """
+
     def get(self, request, req_id):
         request_return_tool = RentToolProposition.objects.get(pk=req_id)
         request_return_tool.by_user_return = True
@@ -357,6 +392,8 @@ class UserToolReturnView(View):
 
 
 class OwnerToolReturnView(View):
+    """  Confirmation from owner about returning tool  """
+
     def get(self, request, req_id):
         request_return_tool = RentToolProposition.objects.get(pk=req_id, tool_owner_view=True)
         request_return_tool.tool_owner_return = True
@@ -367,6 +404,8 @@ class OwnerToolReturnView(View):
 
 
 class MyToolUpdateView(View):
+    """  View to change details of Your tool  """
+
     def get(self, request, my_tool_id):
         my_tool_view = PowerTool.objects.get(pk=my_tool_id)
         my_tool = get_object_or_404(PowerTool, id=my_tool_id)
@@ -379,12 +418,16 @@ class MyToolUpdateView(View):
         my_tool = get_object_or_404(PowerTool, id=my_tool_id)
         my_tool_form = MyToolUpdateForm(request.POST, request.FILES, instance=my_tool)
         if my_tool_form.is_valid():
+            default_category_of_tool = Category.objects.get(category='Other')
+            my_tool_form.category = default_category_of_tool
             my_tool_form.save()
             messages.success(request, f'Your tool has been updated!')
             return redirect('/profile/my_tools')
 
 
 class SearchToolView(View):
+    """  Simple Searchbar for tools, filtering tools from form value  """
+
     def get(self, request):
         search_form = SearchBarToolForm(request.POST)
         return render(request, 'search_tool.html', context={'search_form': search_form})

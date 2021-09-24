@@ -6,6 +6,7 @@ from django.db.models import Max
 
 
 class Profile(models.Model):
+    """  Attached to User.auth Profile model creating alongsite user in singup moment """
     user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100, blank=True)
@@ -40,6 +41,7 @@ class Category(models.Model):
 
 
 class PowerTool(models.Model):
+    """  Item Powertool object model to rent """
     CORDLESSDRILL = 'CD'
     HAMMERDRILL = 'HD'
     IMPACTWRENCH = 'IW'
@@ -164,6 +166,7 @@ class Message(models.Model):
 
 
 class RentToolProposition(models.Model):
+    """  General model to maintain renting operations """
     from_date = models.DateField()
     to_date = models.DateField()
     by_user = models.ForeignKey(Profile, on_delete=models.CASCADE)
