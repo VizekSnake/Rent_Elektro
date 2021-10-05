@@ -127,6 +127,7 @@ class PowerTool(models.Model):
 
 
 class Message(models.Model):
+    """  Model to maintain chat """
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='from_user')
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='to_user')
@@ -166,7 +167,7 @@ class Message(models.Model):
 
 
 class RentToolProposition(models.Model):
-    """  General model to maintain renting operations """
+    """  General model to maintain rental operations """
     from_date = models.DateField()
     to_date = models.DateField()
     by_user = models.ForeignKey(Profile, on_delete=models.CASCADE)

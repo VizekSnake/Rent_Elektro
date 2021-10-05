@@ -64,6 +64,9 @@ class SignupView(View):
             user.save()
             messages.success(request, f'Your account has been created! {user.username} are now able to log in')
             return redirect('login')
+        else:
+            messages.warning(request, f'Something went terrible wrong, or username already exist')
+            return redirect('signup')
 
 
 class ProfileUpdateView(View):
@@ -95,7 +98,7 @@ class ToolUserAddView(View):
         return render(request, 'add_user_tool.html', context={'tool_addform': tool_addform})
 
     def post(self, request):
-        tool_addform = ToolUserAddForm(request.POST)
+        tool_addform = ToolUserAddForm(request.POST, request.FILES)
         if tool_addform.is_valid():
             tool = tool_addform.save(commit=False)
             tool.owner = request.user
@@ -286,6 +289,7 @@ class RequestsView(View):
 
 class MyRequestsView(View):
     """  List of sended Requests from user """
+
     def get(self, request):
         user = request.user
         user_id = user.id
@@ -318,6 +322,7 @@ class LendedView(View):
 
 class DeleteRequestView(View):
     """  View to delete request from user  """
+
     def get(self, request, req_id):
         request_to_delete = RentToolProposition.objects.get(pk=req_id)
         request_to_delete.delete()
@@ -339,6 +344,7 @@ class RejectRequestView(View):
 
 class HideView(View):
     """  View hiding request for tool from User """
+
     def get(self, request, req_id):
         request_to_reject = RentToolProposition.objects.get(pk=req_id)
         request_to_reject.rejected = True
@@ -350,6 +356,7 @@ class HideView(View):
 
 class CancelRequestView(View):
     """  View enabling cancellection of request for tool from User """
+
     def get(self, request, req_id):
         request_to_cancel = RentToolProposition.objects.get(pk=req_id)
         request_to_cancel.canceled = True
@@ -374,6 +381,7 @@ class ApproveRequestView(View):
 
 class RentedView(View):
     """  Active rented tools  """
+
     def get(self, request):
         user = request.user.profile
         user_id = user.id

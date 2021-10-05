@@ -1,9 +1,12 @@
-# Rent_Elektro
+
+
+# Rent_Elektro 
 
 Rent_Elektro is Django app for renting power tools
 
-## Installation
+<img src="http://simpleicon.com/wp-content/uploads/drill.png" height="100"/>
 
+## Installation
 After download use:
 
 ```bash
